@@ -2,7 +2,7 @@
 
 name = "jy-1218-app"
 client_id = "00a117926439bd65eba272e225377728"
-application_url = "https://range-installing-reception-pc.trycloudflare.com"
+application_url = "https://towers-halifax-geneva-resistance.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://range-installing-reception-pc.trycloudflare.com/auth/callback",
-  "https://range-installing-reception-pc.trycloudflare.com/auth/shopify/callback",
-  "https://range-installing-reception-pc.trycloudflare.com/api/auth/callback"
+  "https://towers-halifax-geneva-resistance.trycloudflare.com/auth/callback",
+  "https://towers-halifax-geneva-resistance.trycloudflare.com/auth/shopify/callback",
+  "https://towers-halifax-geneva-resistance.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
