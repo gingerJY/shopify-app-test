@@ -22,6 +22,7 @@ import {
   Text,
   TextField,
   Thumbnail,
+  BlockStack,
   PageActions,
 } from "@shopify/polaris";
 import { ImageMajor } from "@shopify/polaris-icons";
@@ -30,10 +31,10 @@ import db from "../db.server";
 import { getQRCode, validateQRCode } from "../models/QRCode.server";
 
 export async function loader({ request, params }) {
-  // 验证用户身份
+// 验证用户身份
   const { admin } = await authenticate.admin(request);
 
-  // 判断是新建还是有id，返回对应json
+// 判断是新建还是有id，返回对应json
   if (params.id === "new") {
     return json({
       destination: "product",
@@ -92,7 +93,7 @@ export default function QRCodeForm() {
   const navigate = useNavigate();
 
   async function selectProduct() {
-    // resourcePicker可以选 "product" | "variant" | "collection"，可以 "add" | "select"
+// resourcePicker可以选 "product" | "variant" | "collection"，可以 "add" | "select"
     const products = await window.shopify.resourcePicker({
       type: "product",
       action: "select", // customized action verb, either 'select' or 'add',
@@ -113,7 +114,7 @@ export default function QRCodeForm() {
     }
   }
 
-  // 提交,从formState拿出Prisma需要的数据，把formState的值赋给cleanFormState
+// 提交,从formState拿出Prisma需要的数据，把formState的值赋给cleanFormState
   const submit = useSubmit();
   function handleSave() {
     const data = {
@@ -130,19 +131,17 @@ export default function QRCodeForm() {
 
   return (
     <Page>
-      {/* 面包屑导航 */}
+{/* 面包屑导航 */}
       <ui-title-bar title={qrCode.id ? "Edit QR code" : "Create new QR code"}>
         <button variant="breadcrumb" onClick={() => navigate("/app")}>
           QR codes
         </button>
       </ui-title-bar>
-
       <Layout>
         <Layout.Section>
-          <InlineStack gap="5">
-            {/* 标题 */}
+          <BlockStack gap="500">
             <Card>
-              <InlineStack gap="5">
+              <BlockStack gap="500">
                 <Text as={"h2"} variant="headingLg">
                   Title
                 </Text>
@@ -156,23 +155,22 @@ export default function QRCodeForm() {
                   onChange={(title) => setFormState({ ...formState, title })}
                   error={errors.title}
                 />
-              </InlineStack>
+              </BlockStack>
             </Card>
-            
             <Card>
-              <InlineStack gap="5">
+              <BlockStack gap="500">
                 <InlineStack align="space-between">
                   <Text as={"h2"} variant="headingLg">
                     Product
                   </Text>
                   {formState.productId ? (
-                    <Button plain onClick={selectProduct}>
+                    <Button variant="plain" onClick={selectProduct}>
                       Change product
                     </Button>
                   ) : null}
                 </InlineStack>
                 {formState.productId ? (
-                  <InlineStack blockAlign="center" gap={"5"}>
+                  <InlineStack blockAlign="center" gap="500">
                     <Thumbnail
                       source={formState.productImage || ImageMajor}
                       alt={formState.productAlt}
@@ -182,7 +180,7 @@ export default function QRCodeForm() {
                     </Text>
                   </InlineStack>
                 ) : (
-                  <InlineStack gap="2">
+                  <BlockStack gap="200">
                     <Button onClick={selectProduct} id="select-product">
                       Select product
                     </Button>
@@ -192,16 +190,12 @@ export default function QRCodeForm() {
                         fieldID="myFieldID"
                       />
                     ) : null}
-                  </InlineStack>
+                  </BlockStack>
                 )}
-                <Bleed marginInline="20">
+                <Bleed marginInlineStart="200" marginInlineEnd="200">
                   <Divider />
                 </Bleed>
-                <InlineStack
-                  gap="5"
-                  align="space-between"
-                  blockAlign="start"
-                >
+                <InlineStack gap="500" align="space-between" blockAlign="start">
                   <ChoiceList
                     title="Scan destination"
                     choices={[
@@ -221,18 +215,22 @@ export default function QRCodeForm() {
                     error={errors.destination}
                   />
                   {qrCode.destinationUrl ? (
-                    <Button plain url={qrCode.destinationUrl} external>
+                    <Button
+                      variant="plain"
+                      url={qrCode.destinationUrl}
+                      target="_blank"
+                    >
                       Go to destination URL
                     </Button>
                   ) : null}
                 </InlineStack>
-              </InlineStack>
+              </BlockStack>
             </Card>
-          </InlineStack>
+          </BlockStack>
         </Layout.Section>
-        <Layout.Section secondary>
+        <Layout.Section variant="oneThird">
           <Card>
-            {/* 二维码预览 */}
+{/* 二维码预览 */}
             <Text as={"h2"} variant="headingLg">
               QR code
             </Text>
@@ -243,27 +241,27 @@ export default function QRCodeForm() {
                 Your QR code will appear here after you save
               </EmptyState>
             )}
-            <InlineStack gap="3">
+            <BlockStack gap="300">
               <Button
                 disabled={!qrCode?.image}
                 url={qrCode?.image}
                 download
-                primary
+                variant="primary"
               >
                 Download
               </Button>
               <Button
                 disabled={!qrCode.id}
                 url={`/qrcodes/${qrCode.id}`}
-                external
+                target="_blank"
               >
                 Go to public URL
               </Button>
-            </InlineStack>
+            </BlockStack>
           </Card>
         </Layout.Section>
         <Layout.Section>
-          {/* 删除和保存按钮 */}
+{/* 删除和保存按钮 */}
           <PageActions
             secondaryActions={[
               {
