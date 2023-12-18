@@ -1,0 +1,27 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "jy-1218-app"
+client_id = "00a117926439bd65eba272e225377728"
+application_url = "https://range-installing-reception-pc.trycloudflare.com"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://range-installing-reception-pc.trycloudflare.com/auth/callback",
+  "https://range-installing-reception-pc.trycloudflare.com/auth/shopify/callback",
+  "https://range-installing-reception-pc.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2023-10"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "quickstart-bafc63d9.myshopify.com"

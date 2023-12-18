@@ -1,0 +1,27 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "jy-1218-app"
+client_id = "9563f418fe30c1e3cdd990fa6efc1d94"
+application_url = "https://expectations-pharmaceutical-made-mo.trycloudflare.com"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://expectations-pharmaceutical-made-mo.trycloudflare.com/auth/callback",
+  "https://expectations-pharmaceutical-made-mo.trycloudflare.com/auth/shopify/callback",
+  "https://expectations-pharmaceutical-made-mo.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2023-10"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "quickstart-2b6005c9.myshopify.com"
