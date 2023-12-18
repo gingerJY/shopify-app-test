@@ -22,7 +22,6 @@ import {
   Text,
   TextField,
   Thumbnail,
-  BlockStack,
   PageActions,
 } from "@shopify/polaris";
 import { ImageMajor } from "@shopify/polaris-icons";
@@ -31,8 +30,10 @@ import db from "../db.server";
 import { getQRCode, validateQRCode } from "../models/QRCode.server";
 
 export async function loader({ request, params }) {
+  // 验证用户身份
   const { admin } = await authenticate.admin(request);
 
+  // 判断是新建还是有id，返回对应json
   if (params.id === "new") {
     return json({
       destination: "product",
@@ -43,6 +44,7 @@ export async function loader({ request, params }) {
   return json(await getQRCode(Number(params.id), admin.graphql));
 }
 
+// 创建、更新或删除二维码
 export async function action({ request, params }) {
   const { session } = await authenticate.admin(request);
   const { shop } = session;
@@ -72,12 +74,13 @@ export async function action({ request, params }) {
   return redirect(`/app/qrcodes/${qrCode.id}`);
 }
 
+// 管理表单状态
 export default function QRCodeForm() {
   const errors = useActionData()?.errors || {};
 
   const qrCode = useLoaderData();
-  const [formState, setFormState] = useState(qrCode);
-  const [cleanFormState, setCleanFormState] = useState(qrCode);
+  const [formState, setFormState] = useState(qrCode); // 表单每次修改都会变
+  const [cleanFormState, setCleanFormState] = useState(qrCode); // 表单提交修改才会变
   const isDirty = JSON.stringify(formState) !== JSON.stringify(cleanFormState);
 
   const nav = useNavigation();
@@ -89,6 +92,7 @@ export default function QRCodeForm() {
   const navigate = useNavigate();
 
   async function selectProduct() {
+    // resourcePicker可以选 "product" | "variant" | "collection"，可以 "add" | "select"
     const products = await window.shopify.resourcePicker({
       type: "product",
       action: "select", // customized action verb, either 'select' or 'add',
@@ -109,6 +113,7 @@ export default function QRCodeForm() {
     }
   }
 
+  // 提交,从formState拿出Prisma需要的数据，把formState的值赋给cleanFormState
   const submit = useSubmit();
   function handleSave() {
     const data = {
@@ -125,16 +130,19 @@ export default function QRCodeForm() {
 
   return (
     <Page>
+      {/* 面包屑导航 */}
       <ui-title-bar title={qrCode.id ? "Edit QR code" : "Create new QR code"}>
         <button variant="breadcrumb" onClick={() => navigate("/app")}>
           QR codes
         </button>
       </ui-title-bar>
+
       <Layout>
         <Layout.Section>
-          <BlockStack gap="500">
+          <InlineStack gap="5">
+            {/* 标题 */}
             <Card>
-              <BlockStack gap="500">
+              <InlineStack gap="5">
                 <Text as={"h2"} variant="headingLg">
                   Title
                 </Text>
@@ -148,22 +156,23 @@ export default function QRCodeForm() {
                   onChange={(title) => setFormState({ ...formState, title })}
                   error={errors.title}
                 />
-              </BlockStack>
+              </InlineStack>
             </Card>
+            
             <Card>
-              <BlockStack gap="500">
+              <InlineStack gap="5">
                 <InlineStack align="space-between">
                   <Text as={"h2"} variant="headingLg">
                     Product
                   </Text>
                   {formState.productId ? (
-                    <Button variant="plain" onClick={selectProduct}>
+                    <Button plain onClick={selectProduct}>
                       Change product
                     </Button>
                   ) : null}
                 </InlineStack>
                 {formState.productId ? (
-                  <InlineStack blockAlign="center" gap="500">
+                  <InlineStack blockAlign="center" gap={"5"}>
                     <Thumbnail
                       source={formState.productImage || ImageMajor}
                       alt={formState.productAlt}
@@ -173,7 +182,7 @@ export default function QRCodeForm() {
                     </Text>
                   </InlineStack>
                 ) : (
-                  <BlockStack gap="200">
+                  <InlineStack gap="2">
                     <Button onClick={selectProduct} id="select-product">
                       Select product
                     </Button>
@@ -183,12 +192,16 @@ export default function QRCodeForm() {
                         fieldID="myFieldID"
                       />
                     ) : null}
-                  </BlockStack>
+                  </InlineStack>
                 )}
-                <Bleed marginInlineStart="200" marginInlineEnd="200">
+                <Bleed marginInline="20">
                   <Divider />
                 </Bleed>
-                <InlineStack gap="500" align="space-between" blockAlign="start">
+                <InlineStack
+                  gap="5"
+                  align="space-between"
+                  blockAlign="start"
+                >
                   <ChoiceList
                     title="Scan destination"
                     choices={[
@@ -208,21 +221,18 @@ export default function QRCodeForm() {
                     error={errors.destination}
                   />
                   {qrCode.destinationUrl ? (
-                    <Button
-                      variant="plain"
-                      url={qrCode.destinationUrl}
-                      target="_blank"
-                    >
+                    <Button plain url={qrCode.destinationUrl} external>
                       Go to destination URL
                     </Button>
                   ) : null}
                 </InlineStack>
-              </BlockStack>
+              </InlineStack>
             </Card>
-          </BlockStack>
+          </InlineStack>
         </Layout.Section>
-        <Layout.Section variant="oneThird">
+        <Layout.Section secondary>
           <Card>
+            {/* 二维码预览 */}
             <Text as={"h2"} variant="headingLg">
               QR code
             </Text>
@@ -233,26 +243,27 @@ export default function QRCodeForm() {
                 Your QR code will appear here after you save
               </EmptyState>
             )}
-            <BlockStack gap="300">
+            <InlineStack gap="3">
               <Button
                 disabled={!qrCode?.image}
                 url={qrCode?.image}
                 download
-                variant="primary"
+                primary
               >
                 Download
               </Button>
               <Button
                 disabled={!qrCode.id}
                 url={`/qrcodes/${qrCode.id}`}
-                target="_blank"
+                external
               >
                 Go to public URL
               </Button>
-            </BlockStack>
+            </InlineStack>
           </Card>
         </Layout.Section>
         <Layout.Section>
+          {/* 删除和保存按钮 */}
           <PageActions
             secondaryActions={[
               {
