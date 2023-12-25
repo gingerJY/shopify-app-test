@@ -2,7 +2,7 @@
 
 name = "jy-1218-app"
 client_id = "00a117926439bd65eba272e225377728"
-application_url = "https://soviet-cup-jobs-rug.trycloudflare.com"
+application_url = "https://ohio-advance-mysterious-lycos.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://soviet-cup-jobs-rug.trycloudflare.com/auth/callback",
-  "https://soviet-cup-jobs-rug.trycloudflare.com/auth/shopify/callback",
-  "https://soviet-cup-jobs-rug.trycloudflare.com/api/auth/callback"
+  "https://ohio-advance-mysterious-lycos.trycloudflare.com/auth/callback",
+  "https://ohio-advance-mysterious-lycos.trycloudflare.com/auth/shopify/callback",
+  "https://ohio-advance-mysterious-lycos.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
