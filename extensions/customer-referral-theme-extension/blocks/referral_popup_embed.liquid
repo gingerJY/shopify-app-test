@@ -1,17 +1,72 @@
-<xreal-referral>
-  <button referral-button></button>
-  <div class="xrealReferralPopup hidden">
-    <p id="popupContent">登录判断</p>
-    <button close-button>Close</button>
+<div class="coupon-popup-mask hidden">
+  <div class="popup-container">
+    <img src="{{ "popup.jpg" | asset_img_url: '480x' }}" height="120" width="480" loading="lazy">
+    <div class="popup-main">
+      <h2>You got <b>10%</b> off!</h2>
+      <p class="popup-msg">Congrats! Your friend has gifted you a coupon.</p>
+      <div class="popup-coupon-box">
+        <div class="popup-coupon" onclick="onCopyCode()">
+          <span class="coupon-code">123456aas</span>
+          {% render 'icon-copy' %}
+        </div>
+        <p class="coupon-copy-msg">Copied successfully!</p>
+      </div>
+      <button onclick="closePopup()">Shop Now</button>
+    </div>
   </div>
-</xreal-referral>
+</div>
+
+<script>
+  // 获取优惠码
+  const getCouponCode = () => {
+    // TODO: 1、获取当前链接，看是否是推荐链接
+    const isReferralUrl = true;
+    if (isReferralUrl) {
+      document.querySelector('.coupon-popup-mask').classList.remove('hidden');
+    } else {
+      return;
+    }
+    let coupon = null;
+    // TODO: 如果从 localStorage 取，这个 用户X 一旦使用 A 的链接获取过 code，即使 B 再给一个链接，X 通过 B 的链接下单，也还算是 A 的推荐
+    const localCoupon = localStorage.getItem('xreal-coupon');
+    if (!localCoupon) {
+      // TODO: 2、通过推荐链接的参数，接口获取code
+      let resCoupon = 'ANjv98423dd';
+      coupon = resCoupon;
+    } else {
+      coupon = localCoupon;
+    }
+    document.querySelector('.coupon-code').innerHTML = coupon;
+  };
+
+  getCouponCode();
+
+  // 复制优惠码
+  const onCopyCode = () => {
+    const couponCode = document.querySelector('.coupon-code').innerHTML;
+    navigator.clipboard
+      .writeText(couponCode)
+      .then(() => {
+        document.querySelector('.coupon-copy-msg').classList.add('show-copy-msg');
+        setTimeout(() => {
+          document.querySelector('.coupon-copy-msg').classList.remove('show-copy-msg');
+        }, 1500);
+      })
+      .catch((error) => {
+        console.error('无法复制到剪贴板：' + error);
+      });
+  };
+
+  const closePopup = () => {
+    document.querySelector('.coupon-popup-mask').classList.add('hidden');
+  };
+</script>
 
 {% schema %}
 {
   "name": "Referral popup",
   "target": "body",
-  "stylesheet": "referral.css",
-  "javascript": "referral.js",
+  "stylesheet": "referral-popup.css",
   "settings": []
 }
 {% endschema %}

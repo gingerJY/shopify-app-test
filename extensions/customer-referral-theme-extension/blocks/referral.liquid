@@ -1,0 +1,155 @@
+<div class="xreal-account-bg">
+  <div class="xreal-account-container">
+    <div class="xreal-account-referral">
+      <h2>My Referral</h2>
+      <p class="xreal-referral-desc">
+        You haven't placed any orders yet.You haven't placed any orders yet.You haven't placed any orders yet.
+      </p>
+      <div class="xreal-referral-empty hidden">
+        {% render 'icon-empty' %}
+        <div class="btn" onclick="createReferralUrl()">Get My Referral Code</div>
+      </div>
+      <div class="xreal-referral-main hidden">
+        <h3>Refer a Friend</h3>
+        <div class="xreal-referral-url">
+          <div class="url-box" onclick="onCopyLink()">
+            <span class="xreal-referral-url-text"></span>
+            {% render 'icon-copy' %}
+          </div>
+          <p class="url-copy-msg">Copied successfully!</p>
+        </div>
+        <div class="xreal-referral-qrcode">
+          <div class="qrcode-toggle" onclick="onToggleQRCode()">
+            <span>QR Code</span>
+            {% render 'icon-arrow' %}
+          </div>
+          <div class="qrcode-box">
+            <div id="xreal-qrcode"></div>
+            <a class="qrcode-download" href="">
+              {% render 'icon-download' %}
+              <span>Save</span>
+            </a>
+          </div>
+        </div>
+        <h3>Refer a Friend</h3>
+        <div class="xreal-referral-detail">
+          <div class="box">
+            <h4>Total Completed</h4>
+            <b>10</b>
+          </div>
+          <div class="box">
+            <h4>Total Pending</h4>
+            <b>5</b>
+          </div>
+        </div>
+      </div>
+      <div class="xreal-referral-rule">
+        <h3>Referral Code rules</h3>
+        <p>
+          On the right arm of Air 2, you'll find three buttons:<br>
+          1. Mode Button: Single or double click to turn the screens on/off.<br>
+          2. "+" Button:<br>
+          Single click to adjust brightness or volume (defaults to brightness adjust mode).<br>
+          Long press for 2 seconds to switch between 2D/3D display modes.<br>
+          Long press for 4 seconds to switch audio channels when using a 3rd-party HDMI-C adapter.<br>
+          3. "-" Button:<br>
+          Single click to adjust brightness or volume (defaults to brightness adjust mode).<br>
+          Long press for 2 seconds to toggle between brightness adjust mode and volume adjust mode.
+        </p>
+        <a class="xreal-link" href="">Referral Code rules</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script>
+  // 生成二维码
+  const getQRCode = (qrData) => {
+    document.querySelector('.xreal-referral-main').classList.remove('hidden');
+    document.querySelector('.xreal-referral-url-text').innerHTML = qrData;
+    const qrcodeElement = document.getElementById('xreal-qrcode');
+    const qrcode = new QRCode(qrcodeElement, {
+      text: qrData,
+      width: 100,
+      height: 100,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+    });
+    const canvasElement = qrcodeElement.querySelector('canvas');
+    const imageDataURL = canvasElement.toDataURL('image/png');
+    const saveBtnElement = document.querySelector('.qrcode-download');
+    saveBtnElement.href = imageDataURL;
+    saveBtnElement.download = 'xreal-referral-qrcode.png';
+  };
+
+  const getReferralUrl = () => {
+    // 1、获取当前用户是否有专属referral链接
+    let referralUrl = null;
+    // let referralUrl = 'https://us.shop.xreal.com/';
+    return referralUrl;
+  };
+
+  const referralInit = () => {
+    const url = getReferralUrl();
+    if (!url) {
+      document.querySelector('.xreal-referral-empty').classList.remove('hidden');
+    } else {
+      getQRCode(url);
+    }
+  };
+  referralInit();
+
+  const createReferralUrl = () => {
+    // 2、生成专属referral链接
+    let url = 'https://us.shop.xreal.com/';
+    document.querySelector('.xreal-referral-empty').classList.add('hidden');
+    getQRCode(url);
+  };
+
+  const getReferralList = () => {
+    // 3、获取当前用户referral列表
+  };
+
+  // 复制链接
+  const onCopyLink = () => {
+    const currentLink = document.querySelector('.xreal-referral-url-text').innerHTML;
+    navigator.clipboard
+      .writeText(currentLink)
+      .then(() => {
+        document.querySelector('.url-copy-msg').classList.add('show-copy-msg');
+        setTimeout(() => {
+          document.querySelector('.url-copy-msg').classList.remove('show-copy-msg');
+        }, 3000);
+      })
+      .catch((error) => {
+        console.error('无法复制到剪贴板：' + error);
+      });
+  };
+
+  // 展开 QR Code
+  const onToggleQRCode = () => {
+    const element = document.querySelector('.qrcode-box');
+    const qrcodeToggle = document.querySelector('.qrcode-toggle');
+    const svgElement = qrcodeToggle.querySelector('svg');
+    if (element.classList.contains('show-qrcode-box')) {
+      element.classList.remove('show-qrcode-box');
+      svgElement.style.transform = 'rotate(0deg)';
+    } else {
+      element.classList.add('show-qrcode-box');
+      svgElement.style.transform = 'rotate(180deg)';
+    }
+
+  };
+
+</script>
+
+
+{% schema %}
+{
+  "name": "Referral Block",
+  "target": "section",
+  "stylesheet": "referral-block.css",
+  "settings": []
+}
+{% endschema %}
