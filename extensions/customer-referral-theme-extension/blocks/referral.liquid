@@ -64,6 +64,22 @@
 
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 <script>
+  // TODO: 调用外部接口测试，需要删除
+  const getIpRegion = () => {
+    fetch(`https://app-api.xreal.com/api/cloud-resource/v1/isc/ip/region`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((res) => {
+        const { code, data } = res;
+        if (code == 200) {
+          console.log('ip接口返回值', data);
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
   // 生成二维码
   const getQRCode = (qrData) => {
     document.querySelector('.xreal-referral-main').classList.remove('hidden');
@@ -91,6 +107,7 @@
   };
 
   const referralInit = () => {
+    getIpRegion()  // TODO: 调用外部接口测试，需要删除
     const url = getReferralUrl();
     if (!url) {
       document.querySelector('.xreal-referral-empty').classList.remove('hidden');
